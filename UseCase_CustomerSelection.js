@@ -346,10 +346,10 @@ function selectFirstCustomerEntries() {
     if (customer && equalsLoose_(customer, customerName)) {
       matches.push({
         entryName: row[COLS.entry - 1],
-        username:  row[COLS.user  - 1],
-        password:  row[COLS.pass  - 1],
-        url:       row[COLS.url   - 1],
-        notes:     row[COLS.notes - 1],
+        username: row[COLS.user - 1],
+        password: row[COLS.pass - 1],
+        url: row[COLS.url - 1],
+        notes: row[COLS.notes - 1],
         path
       });
     }
@@ -439,7 +439,7 @@ function testReturn() {
 function selectEntriesByCustomerIndex(chosenIndex) {
   const ss = SpreadsheetApp.getActive();
   const SH_OVERVIEW = 'Klanten overzicht'; // A=group, B=index, C=name
-  const SH_IMPORT   = 'Klant import';
+  const SH_IMPORT = 'Klant import';
   const TARGET_GROUP = 'Klanten';
 
   // Overzichtsheet ophalen
@@ -499,10 +499,10 @@ function selectEntriesByCustomerIndex(chosenIndex) {
       matches.push({
         sheetRow,
         entryName: row[COLS.entry - 1],
-        username:  row[COLS.user  - 1],
-        password:  row[COLS.pass  - 1],
-        url:       row[COLS.url   - 1],
-        notes:     row[COLS.notes - 1],
+        username: row[COLS.user - 1],
+        password: row[COLS.pass - 1],
+        url: row[COLS.url - 1],
+        notes: row[COLS.notes - 1],
         path
       });
     } else if (!pathCustomerForLoose && normalizeName(customerName).includes(normalizeName(pathCustomer))) {
@@ -513,7 +513,7 @@ function selectEntriesByCustomerIndex(chosenIndex) {
 
   // 2) Geen exacte matches, maar wel mogelijke deelmatch → vraag bevestiging
   if (!matches.length && pathCustomerForLoose &&
-      normalizeName(customerName).includes(normalizeName(pathCustomerForLoose))) {
+    normalizeName(customerName).includes(normalizeName(pathCustomerForLoose))) {
 
     const partMatch = ui.prompt(
       "Deelse match",
@@ -532,10 +532,10 @@ function selectEntriesByCustomerIndex(chosenIndex) {
           matches.push({
             sheetRow,
             entryName: row[COLS.entry - 1],
-            username:  row[COLS.user  - 1],
-            password:  row[COLS.pass  - 1],
-            url:       row[COLS.url   - 1],
-            notes:     row[COLS.notes - 1],
+            username: row[COLS.user - 1],
+            password: row[COLS.pass - 1],
+            url: row[COLS.url - 1],
+            notes: row[COLS.notes - 1],
             path
           });
         }

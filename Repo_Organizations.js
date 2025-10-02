@@ -85,7 +85,7 @@ function getOrganizationIdByName(organizationName) {
     var responseCode = response.getResponseCode();
     Logger.log('Response Code for organization search: ' + responseCode);
 
-    if (responseCode === 200) { 
+    if (responseCode === 200) {
       // Succesvolle call → data parsen
       var data = JSON.parse(response.getContentText());
 
@@ -195,3 +195,65 @@ function getOrganiations() {
   // Log het complete overzicht als JSON
   Logger.log(JSON.stringify(organisations, null, 2));
 }
+
+/**
+ * Fetch a full overview (all pages) of ITGlue organizations.
+ * Returns: Array<{ id: string, name: string }>
+ * Requires Script Property: IT_GLUE_API_KEY
+ */
+function getOrganizationOverview() {
+  var apiKey = CONFIG_get('IT_GLUE_API_KEY');
+  if (!apiKey) {
+    Logger.log('Missing Script Property: IT_GLUE_API_KEY');
+    return [];
+  }
+
+  var baseUrl = 'https://api.eu.itglue.com/organizations';
+  var pageSize = 100; // ITGlue supports JSON:API-style pagination. 100 is a common practical max.
+
+  var all = [];
+  var page = 1;
+
+  while (true) {
+    var url = baseUrl + '?page[size]=' + pageSize + '&page[number]=' + page +
+      '&fields[organizations]=name'; // only fetch what we need
+    var options = {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+        'x-api-key': apiKey
+      },
+      muteHttpExceptions: true
+    };
+
+    var resp = UrlFetchApp.fetch(url, options);
+    var code = resp.getResponseCode();
+    if (code !== 200) {
+      Logger.log('ITGlue organizations fetch failed (HTTP ' + code + '): ' + resp.getContentText());
+      break;
+    }
+
+    var json = JSON.parse(resp.getContentText());
+    var data = (json && json.data) || [];
+    if (!data.length) {
+      break; // no more rows
+    }
+
+    for (var i = 0; i < data.length; i++) {
+      var row = data[i];
+      if (row && row.id && row.attributes && typeof row.attributes.name === 'string') {
+        all.push({ id: String(row.id), name: row.attributes.name });
+      }
+    }
+
+    // Stop if we received less than a full page.
+    if (data.length < pageSize) {
+      break;
+    }
+    page++;
+  }
+
+  Logger.log('Fetched organizations: ' + all.length);
+  return all;
+}
+

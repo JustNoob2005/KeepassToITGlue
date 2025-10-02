@@ -33,33 +33,33 @@
 // From: Import passwords.js
 function createPasswordandFolder(person) {
   // Actieve sheet + alle waarden ophalen
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet(); 
-  var range = sheet.getDataRange(); 
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var range = sheet.getDataRange();
   var values = range.getValues();
 
   // Header-rij ophalen en kolomindexen bepalen (veilig t.o.v. kolomvolgorde)
   var headers = values[0];
-  var organizationNameIndex   = headers.indexOf("organization-name");
-  var organizationIdIndex     = headers.indexOf("organization-id");
-  var nameIndex               = headers.indexOf("name");
-  var usernameIndex           = headers.indexOf("username");
+  var organizationNameIndex = headers.indexOf("organization-name");
+  var organizationIdIndex = headers.indexOf("organization-id");
+  var nameIndex = headers.indexOf("name");
+  var usernameIndex = headers.indexOf("username");
   var passwordCategoryIdIndex = headers.indexOf("password-category-id");
-  var passwordIndex           = headers.indexOf("password");
-  var folderLevel1Index       = headers.indexOf("MapNiveau1");
-  var folderLevel2Index       = headers.indexOf("MapNiveau2");
-  var folderLevel3Index       = headers.indexOf("MapNiveau3");
-  var folderLevel4Index       = headers.indexOf("MapNiveau4");
-  var urlIndex                = headers.indexOf("url");
-  var notesIndex              = headers.indexOf("notes");
+  var passwordIndex = headers.indexOf("password");
+  var folderLevel1Index = headers.indexOf("MapNiveau1");
+  var folderLevel2Index = headers.indexOf("MapNiveau2");
+  var folderLevel3Index = headers.indexOf("MapNiveau3");
+  var folderLevel4Index = headers.indexOf("MapNiveau4");
+  var urlIndex = headers.indexOf("url");
+  var notesIndex = headers.indexOf("notes");
 
   // Loop over alle data-rijen (vanaf i=1; i=0 is header)
   for (var i = 1; i < values.length; i++) {
     var row = values[i];
 
     // Klantnaam → organisatie-ID opzoeken, of bestaande ID uit sheet gebruiken
-    var organizationName       = row[organizationNameIndex];
-    var retrievedOrganizationId= getOrganizationID(organizationName); // API lookup
-    var organizationId         = retrievedOrganizationId || row[organizationIdIndex];
+    var organizationName = row[organizationNameIndex];
+    var retrievedOrganizationId = getOrganizationID(organizationName); // API lookup
+    var organizationId = retrievedOrganizationId || row[organizationIdIndex];
 
     // Als we via API een ID vonden, schrijf die terug in de sheet (kolom "organization-id")
     if (retrievedOrganizationId) {
@@ -67,14 +67,14 @@ function createPasswordandFolder(person) {
     }
 
     // Basisvelden uit de rij
-    var name               = row[nameIndex];
-    var username           = row[usernameIndex];
+    var name = row[nameIndex];
+    var username = row[usernameIndex];
     var passwordCategoryId = row[passwordCategoryIdIndex];
-    var password           = row[passwordIndex];
+    var password = row[passwordIndex];
 
     // Mapniveaus (lege strings als niet gevuld) en lijst voor hiërarchie
     var folderNames = [];
-    var parentId    = null; // parent-id voor geneste mappen
+    var parentId = null; // parent-id voor geneste mappen
     var folderLevel1Name = row[folderLevel1Index] ? row[folderLevel1Index].trim() : "";
     var folderLevel2Name = row[folderLevel2Index] ? row[folderLevel2Index].trim() : "";
     var folderLevel3Name = row[folderLevel3Index] ? row[folderLevel3Index].trim() : "";
@@ -87,7 +87,7 @@ function createPasswordandFolder(person) {
     if (folderLevel4Name) folderNames.push(folderLevel4Name);
 
     var passurl = row[urlIndex];
-    var notes   = row[notesIndex];
+    var notes = row[notesIndex];
 
     // Voor elke mapnaam in de hiërarchie: bestaand map-ID zoeken, zo niet → aanmaken
     folderNames.forEach((folder, index) => {
@@ -122,7 +122,7 @@ function createPasswordandFolder(person) {
         sheet.getRange(i + 1, 17).setValue(true);
       } else {
         Logger.log('Fout bij het aanmaken van het wachtwoord.');
-      } 
+      }
     }
   }
 }
@@ -137,8 +137,8 @@ function checkIfPasswordExists(name, organizationId, passwordfolderId) {
   var passwords = getPasswordsFromOrganization(organizationId);
 
   // Filter op exacte naam + (optioneel) zelfde map
-  var matchingPasswords = passwords.filter(function(password) {
-    var nameMatches   = String(password.attributes.name) === String(name);
+  var matchingPasswords = passwords.filter(function (password) {
+    var nameMatches = String(password.attributes.name) === String(name);
     var folderMatches = !passwordfolderId || String(password.attributes['password-folder-id']) === String(passwordfolderId);
     Logger.log(folderMatches);
     return nameMatches && folderMatches;
@@ -147,7 +147,7 @@ function checkIfPasswordExists(name, organizationId, passwordfolderId) {
   // Matches → log + return array; anders null/undefined
   if (matchingPasswords.length > 0) {
     Logger.log('Er zijn ' + matchingPasswords.length + ' wachtwoorden gevonden met de gegeven naam en folder-id.');
-    matchingPasswords.forEach(function(password) {
+    matchingPasswords.forEach(function (password) {
       Logger.log('Wachtwoord ID: ' + password.id);
       Logger.log('Folder ID: ' + password.attributes['password-folder-id']);
     });
@@ -193,7 +193,7 @@ function getSheetByPerson(person) {
 // From: Import passwords.js
 function getDataFromPersonSheet(person) {
   // Haal de juiste sheet op
-  var sheet   = getSheetByPerson(person);
+  var sheet = getSheetByPerson(person);
   var lastRow = sheet.getLastRow();
   var lastCol = sheet.getLastColumn();
 
@@ -221,10 +221,10 @@ function getPasswordsFromOrganization(organizationId) {
 
   // Eerste pagina = 1 (ITGlue pagineert)
   var allPasswords = [];
-  
+
   try {
     var hasMorePages = true;
-    var currentPage  = 1;
+    var currentPage = 1;
 
     // Zolang 'links.next' aanwezig is → volgende pagina ophalen
     while (hasMorePages) {
@@ -239,7 +239,7 @@ function getPasswordsFromOrganization(organizationId) {
 
       var pageUrl = `https://api.eu.itglue.com/passwords?filter[organization_id]=${organizationId}&page[number]=${currentPage}`;
 
-      var response     = UrlFetchApp.fetch(pageUrl, options);
+      var response = UrlFetchApp.fetch(pageUrl, options);
       var responseCode = response.getResponseCode();
 
       if (responseCode !== 200) {
@@ -252,7 +252,7 @@ function getPasswordsFromOrganization(organizationId) {
         return [];
       }
 
-      var data      = JSON.parse(responseText);
+      var data = JSON.parse(responseText);
       var passwords = data.data || [];
 
       // Voeg toe aan totaal
@@ -264,7 +264,7 @@ function getPasswordsFromOrganization(organizationId) {
     }
 
     return allPasswords;
-    
+
   } catch (error) {
     Logger.log('Error fetching passwords from IT Glue API: ' + error);
     return [];
@@ -298,7 +298,7 @@ function getPasswordById(organizationId, passwordId) {
   };
 
   try {
-    var response     = UrlFetchApp.fetch(url, options);
+    var response = UrlFetchApp.fetch(url, options);
     var responseCode = response.getResponseCode();
 
     if (responseCode === 200) {
@@ -325,7 +325,7 @@ function getPasswordById(organizationId, passwordId) {
 function createPassword(organizationId, name, username, passwordCategoryId, password, map, notes, passurl) {
   var scriptProperties = PropertiesService.getScriptProperties();
   var apiKey = scriptProperties.getProperty('IT_GLUE_API_KEY');
- 
+
   if (!apiKey) {
     Logger.log('API Key is missing');
     Browser.msgBox('API Key is missing');
@@ -363,7 +363,7 @@ function createPassword(organizationId, name, username, passwordCategoryId, pass
   };
 
   try {
-    var response     = UrlFetchApp.fetch(url, options);
+    var response = UrlFetchApp.fetch(url, options);
     var responseCode = response.getResponseCode();
     Logger.log('Response Code for password creation: ' + responseCode);
 
@@ -405,7 +405,7 @@ function createPasswordFolder(organizationId, folderName, mapparent_id) {
       }
     }
   };
-  
+
   var options = {
     'method': 'POST',
     'headers': {
@@ -417,7 +417,7 @@ function createPasswordFolder(organizationId, folderName, mapparent_id) {
   };
 
   try {
-    var response     = UrlFetchApp.fetch(url, options);
+    var response = UrlFetchApp.fetch(url, options);
     var responseCode = response.getResponseCode();
     Logger.log('Response Code for folder creation: ' + responseCode);
 
@@ -465,7 +465,7 @@ function findPasswordFolder(organizationId, folderName, parentId) {
   };
 
   try {
-    var response     = UrlFetchApp.fetch(url, options);
+    var response = UrlFetchApp.fetch(url, options);
     var responseCode = response.getResponseCode();
     var responseBody = response.getContentText();
 
@@ -480,12 +480,12 @@ function findPasswordFolder(organizationId, folderName, parentId) {
           for (var i = 0; i < folders.length; i++) {
             var folder = folders[i];
             if (folder.attributes['name'] === folderName &&
-                String(folder.attributes['parent-id']) === String(parentId)) {
+              String(folder.attributes['parent-id']) === String(parentId)) {
               Logger.log('Folder bestaat al: ' + folder.id);
               return folder.id; // Found
             }
           }
-          
+
           Logger.log('Folder bestaat nog niet');
           return null; // Niet gevonden
         } else {
@@ -511,9 +511,9 @@ function findPasswordFolder(organizationId, folderName, parentId) {
 // From: PasswordAPICalls.js
 function searchFolderRecursive(folders, folderName, parentId) {
   for (var i = 0; i < folders.length; i++) {
-    var folder     = folders[i];
+    var folder = folders[i];
     var attributes = folder['attributes'];
-  
+
     // Naam-match + (optioneel) parent-match
     if (attributes['name'] === folderName) {
       if (parentId === null || String(attributes['parent-id']) === String(parentId)) {
@@ -539,7 +539,7 @@ function searchFolderRecursive(folders, folderName, parentId) {
 function findPasswordFolderWithParentCheck(organizationId, folderName, parentFolderId) {
   var scriptProperties = PropertiesService.getScriptProperties();
   var sessionKey = scriptProperties.getProperty('IT_GLUE_SESSION_TOKEN');
-  
+
   // Server-side filters op naam (en optioneel parent-id)
   var url = `https://api.eu.itglue.com/organizations/${organizationId}/relationships/password_folders?filter[name]=${encodeURIComponent(folderName)}`;
   if (parentFolderId) {
@@ -556,7 +556,7 @@ function findPasswordFolderWithParentCheck(organizationId, folderName, parentFol
   };
 
   try {
-    var response     = UrlFetchApp.fetch(url, options);
+    var response = UrlFetchApp.fetch(url, options);
     var responseCode = response.getResponseCode();
     Logger.log('Response Code for folder search: ' + responseCode);
 
@@ -569,12 +569,12 @@ function findPasswordFolderWithParentCheck(organizationId, folderName, parentFol
 
         // Verzamel alle exacte matches op naam + (optioneel) parent-id
         for (var i = 0; i < data.data.length; i++) {
-          var folder     = data.data[i];
+          var folder = data.data[i];
           var apiFolderName = folder.attributes.name.trim();
-          var apiParentId   = folder.relationships.parent.data ? folder.relationships.parent.data.id : null;
+          var apiParentId = folder.relationships.parent.data ? folder.relationships.parent.data.id : null;
 
           if (apiFolderName.toLowerCase() === folderName.trim().toLowerCase() &&
-              (!parentFolderId || apiParentId === parentFolderId)) {
+            (!parentFolderId || apiParentId === parentFolderId)) {
             matchingFolders.push(folder);
           }
         }
@@ -593,7 +593,7 @@ function findPasswordFolderWithParentCheck(organizationId, folderName, parentFol
 
         // Meerdere matches → vraag gebruiker om keuze
         var ui = SpreadsheetApp.getUi();
-        var choices = matchingFolders.map((folder, index) => 
+        var choices = matchingFolders.map((folder, index) =>
           `${index + 1}: ${folder.attributes.name} (Parent ID: ${folder.relationships.parent.data ? folder.relationships.parent.data.id : 'Geen'})`
         ).join('\n');
 
@@ -680,20 +680,20 @@ function writePasswordsToSheet(passwords, startFunctie, sheetname) {
   var headers = [
     "organization-name", "organization-id", "name", "username",
     "password-category-id", "password", "password-folder-id",
-    "url", "notes", "password-id","Full Path", "MapNiveau1","MapNiveau2",
-    "MapNiveau3","MapNiveau4","MapNiveau5","MapNiveau6",
+    "url", "notes", "password-id", "Full Path", "MapNiveau1", "MapNiveau2",
+    "MapNiveau3", "MapNiveau4", "MapNiveau5", "MapNiveau6",
   ];
   passwordsheet.getRange(1, 1, 1, headers.length).setValues([headers]);
 
   // Waarden 2D-array bouwen per password-record
-  var values = passwords.map(function(password) {
-    var organizationId   = password.attributes["organization-id"];
-    var passwordId       = password['id'];
+  var values = passwords.map(function (password) {
+    var organizationId = password.attributes["organization-id"];
+    var passwordId = password['id'];
     var organizationName = getCachedOrganizationNameById(organizationId, organizationCache);
 
     // Extra call om plaintext/attributen op te halen
     var passwordtekstObj = getPasswordById(String(organizationId), String(passwordId));
-    var folderId         = password.attributes["password-folder-id"];
+    var folderId = password.attributes["password-folder-id"];
 
     return [
       organizationName || "",
@@ -740,7 +740,7 @@ function exportPasswordsForOrganization(organisatieNaam, startFunctie, sheetname
       "Is de organisatie die u wilt ophalen uit IT-Glue: " + organisatieNaam + "?",
       ui.ButtonSet.OK_CANCEL
     );
-    
+
     if (acceptlocation.getSelectedButton() == ui.Button.OK) {
       organizationName = organisatieNaam;
     } else {
@@ -756,15 +756,15 @@ function exportPasswordsForOrganization(organisatieNaam, startFunctie, sheetname
 
   // ID opzoeken via naam
   var organizationId = getOrganizationID(organizationName);
-  
+
   // Niet gevonden → vraag retry of annuleren
   if (!organizationId) {
     var retryResponse = ui.alert(
-      "Klant niet gevonden", 
-      "De organisatie '" + organizationName + "' kon niet worden gevonden. Probeert u het opnieuw?", 
+      "Klant niet gevonden",
+      "De organisatie '" + organizationName + "' kon niet worden gevonden. Probeert u het opnieuw?",
       ui.ButtonSet.OK_CANCEL
     );
-    
+
     if (retryResponse == ui.Button.OK) {
       // Herstart zonder voorgedefinieerde naam
       exportPasswordsForOrganization(null, startFunctie);
@@ -812,13 +812,13 @@ function processPasswords(person) {
   // Kies input- en import-tabbladen op basis van persoon
   var s1Sheet, s2Sheet, sheetname;
   if (person === "1") {
-    s1Sheet  = spreadsheet.getSheetByName("Input(Corné)");
-    s2Sheet  = spreadsheet.getSheetByName("Import(Corné)");
-    sheetname= "Import(Corné)";
+    s1Sheet = spreadsheet.getSheetByName("Input(Corné)");
+    s2Sheet = spreadsheet.getSheetByName("Import(Corné)");
+    sheetname = "Import(Corné)";
   } else if (person === "2") {
-    s1Sheet  = spreadsheet.getSheetByName("Input(Kevin)");
-    s2Sheet  = spreadsheet.getSheetByName("Import(Kevin)");
-    sheetname= "Import(Kevin)";
+    s1Sheet = spreadsheet.getSheetByName("Input(Kevin)");
+    s2Sheet = spreadsheet.getSheetByName("Import(Kevin)");
+    sheetname = "Import(Kevin)";
   }
 
   // Doelblad leegmaken voor schone start
@@ -832,8 +832,8 @@ function processPasswords(person) {
   ];
 
   // Controleer of headers al aanwezig zijn; zo niet → setten
-  var existingHeaders   = s2Sheet.getRange(1, 1, 1, headers.length).getValues()[0];
-  var needToAddHeaders  = !existingHeaders.some(header => header === headers[0]);
+  var existingHeaders = s2Sheet.getRange(1, 1, 1, headers.length).getValues()[0];
+  var needToAddHeaders = !existingHeaders.some(header => header === headers[0]);
   if (needToAddHeaders) {
     s2Sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   }
@@ -843,18 +843,18 @@ function processPasswords(person) {
 
   // Verwerk rijen (sla header over)
   for (var i = 1; i < data.length; i++) {
-    var row      = data[i];
-    var name     = row[0];
-    var login    = row[1];
+    var row = data[i];
+    var name = row[0];
+    var login = row[1];
     var password = row[2];
-    var url      = row[3];
-    var note     = row[4];
-    var path     = row[6];
+    var url = row[3];
+    var note = row[4];
+    var path = row[6];
 
     // Bouw nieuwe rij voor importblad (indices komen overeen met headers)
-    var newRow   = [];
-    newRow[2]    = name;
-    newRow[3]    = login;
+    var newRow = [];
+    newRow[2] = name;
+    newRow[3] = login;
 
     // Als password-formule voorkomt (=...), prefix met ' om formule te ontkrachten
     if (password && password.toString().startsWith("=")) {
@@ -925,7 +925,7 @@ function voegHttpsToeAanURLs(sheetname) {
   var data = sheet.getDataRange().getValues();
 
   // Zoek index van "url"-kolom
-  var headerRow      = data[0];
+  var headerRow = data[0];
   var urlColumnIndex = headerRow.indexOf("url");
 
   if (urlColumnIndex === -1) {
@@ -934,7 +934,7 @@ function voegHttpsToeAanURLs(sheetname) {
   }
 
   // Regex voor IP-adres (optioneel poort) en domein zonder protocol
-  var ipRegex     = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?$/;
+  var ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?$/;
   var domainRegex = /^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}(:\d{1,5})?(\/.*)?$/;
 
   // Rijen doorlopen (vanaf 1 om header te skippen)
@@ -963,15 +963,15 @@ function voegHttpsToeAanURLs(sheetname) {
 // From: Process password.js
 function valideerEnKleurCellen(sheetname) {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet       = spreadsheet.getSheetByName(sheetname);
-  var data        = sheet.getDataRange().getValues();
-  var range       = sheet.getDataRange();
+  var sheet = spreadsheet.getSheetByName(sheetname);
+  var data = sheet.getDataRange().getValues();
+  var range = sheet.getDataRange();
   var backgroundColors = range.getBackgrounds(); // behoud bestaande kleuren
 
   // Benodigde kolommen
-  var headers         = data[0];
+  var headers = data[0];
   var requiredColumns = ["organization-name", "name", "username", "password", "url", "Full Path"];
-  var columnIndices   = {};
+  var columnIndices = {};
 
   // Map kolomnamen → index
   for (var i = 0; i < headers.length; i++) {
@@ -987,9 +987,9 @@ function valideerEnKleurCellen(sheetname) {
     }
   });
 
-  var nameIndex     = columnIndices["name"];
+  var nameIndex = columnIndices["name"];
   var fullPathIndex = columnIndices["Full Path"];
-  var keyCounts     = {};
+  var keyCounts = {};
 
   // Rijen valideren en kleuren (sla header over)
   for (var rowIndex = 1; rowIndex < data.length; rowIndex++) {
@@ -1011,7 +1011,7 @@ function valideerEnKleurCellen(sheetname) {
 
     // Unieke sleutel van (name + Full Path) voor duplicate-detectie
     var fullPathValue = row[fullPathIndex] || "";
-    var uniqueKey     = `${nameValue}-${fullPathValue}`.trim();
+    var uniqueKey = `${nameValue}-${fullPathValue}`.trim();
 
     if (uniqueKey) {
       keyCounts[uniqueKey] = (keyCounts[uniqueKey] || []).concat(rowIndex);
@@ -1019,7 +1019,7 @@ function valideerEnKleurCellen(sheetname) {
 
     // URL-check: http → rood, anders geen https → oranje
     var urlIndex = columnIndices["url"];
-    var url      = row[urlIndex];
+    var url = row[urlIndex];
     if (url) {
       url = url.toString().trim();
       if (url.startsWith("http://")) {
@@ -1042,7 +1042,7 @@ function valideerEnKleurCellen(sheetname) {
   Object.keys(keyCounts).forEach(function (key) {
     if (keyCounts[key].length > 1) {
       keyCounts[key].forEach(function (rowIndex) {
-        backgroundColors[rowIndex][nameIndex]     = "#FFC0CB"; // Licht roze
+        backgroundColors[rowIndex][nameIndex] = "#FFC0CB"; // Licht roze
         backgroundColors[rowIndex][fullPathIndex] = "#FFC0CB";
       });
     }

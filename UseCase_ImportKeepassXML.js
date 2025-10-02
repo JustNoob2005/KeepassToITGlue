@@ -54,7 +54,7 @@ function importKeePassXML() {
   sheet.clear();
 
   // Headers schrijven
-  var headers = ["Naam","Username","Wachtwoord","URL","Notities","Path"];
+  var headers = ["Naam", "Username", "Wachtwoord", "URL", "Notities", "Path"];
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
 
   // XML-bestand ophalen en als string lezen
@@ -81,7 +81,7 @@ function importKeePassXML() {
 
   // Verzamellijst voor rijen die we naar de sheet schrijven
   var rows = [];
-  subGroups.forEach(function(klantGroup){
+  subGroups.forEach(function (klantGroup) {
     // Verwerk klantgroep recursief en push rows
     processGroup_Limited(klantGroup, ["Klanten"], rows);
   });
@@ -109,13 +109,13 @@ function processGroup_Limited(groupElement, pathArray, rows) {
 
   // 1) Subgroepen eerst recursief verwerken
   var subGroups = groupElement.getChildren("Group");
-  subGroups.forEach(function(subG) {
+  subGroups.forEach(function (subG) {
     processGroup_Limited(subG, currentPath, rows);
   });
 
   // 2) Entries in huidige groep verwerken
   var entries = groupElement.getChildren("Entry");
-  entries.forEach(function(entry) {
+  entries.forEach(function (entry) {
     // We schrijven exact 6 kolommen: Naam, Username, Wachtwoord, URL, Notities, Path
     var newRow = new Array(6).fill("");
 
@@ -124,16 +124,16 @@ function processGroup_Limited(groupElement, pathArray, rows) {
 
     // Key/Value velden van de entry uitlezen
     var strings = entry.getChildren("String");
-    strings.forEach(function(s){
+    strings.forEach(function (s) {
       var key = s.getChildText("Key");
       var value = s.getChildText("Value");
       if (key && value) {
         key = key.toLowerCase();
         if (key === "username") newRow[1] = value;
         if (key === "password") newRow[2] = value;
-        if (key === "url")      newRow[3] = value;
-        if (key === "notes")    newRow[4] = value;
-        if (key === "title")    newRow[0] = value;
+        if (key === "url") newRow[3] = value;
+        if (key === "notes") newRow[4] = value;
+        if (key === "title") newRow[0] = value;
       }
     });
 
@@ -175,7 +175,7 @@ function listTopGroups() {
   // Alle top-level groepen onder "Database" verzamelen
   var topGroups = databaseGroup.getChildren("Group");
   var rows = [];
-  topGroups.forEach(function(g, idx){
+  topGroups.forEach(function (g, idx) {
     var name = g.getChildText("Name") || "(geen naam)";
     rows.push([idx, name]);
     Logger.log("Toplevel groep: " + name);
@@ -204,7 +204,7 @@ function listSubGroups(topGroupIndex) {
   sheet.clear();
 
   // Headers
-  sheet.getRange(1, 1, 1, 3).setValues([["Index","Naam","Bovenliggende groep"]]);
+  sheet.getRange(1, 1, 1, 3).setValues([["Index", "Naam", "Bovenliggende groep"]]);
 
   // XML inladen
   var file = DriveApp.getFileById(fileId);
@@ -232,7 +232,7 @@ function listSubGroups(topGroupIndex) {
 
   // Bouw rijen met subgroep-naam + bovenliggende naam
   var rows = [];
-  subGroups.forEach(function(g, idx){
+  subGroups.forEach(function (g, idx) {
     var name = g.getChildText("Name") || "(geen naam)";
     rows.push([idx, name, parentName]);
     Logger.log("Subgroep: " + name + " onder " + parentName);

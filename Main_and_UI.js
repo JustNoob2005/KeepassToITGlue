@@ -62,7 +62,7 @@ function startScript() {
 // Voert de juiste functie uit op basis van wie de gebruiker is en welke functie is gekozen
 function runAction(person, func) {
   if (person === "1") { // Als Corne gekozen is
-    if (func === "1") { 
+    if (func === "1") {
       processPasswords('1'); // Voer "processPasswords" uit voor Corne
     } else {
       createPasswordandFolder('1'); // Voer "createPasswordandFolder" uit voor Corne
@@ -96,6 +96,7 @@ function onOpen() {
   ui.createMenu('IT Glue Import Overig')
     .addSeparator()
     .addItem('Import XML', 'importKeePassXML') // Roept importKeePassXML() aan
+    .addItem('Import organization names', 'importAllOrganizationNamesToSheet')
     .addToUi();
 }
 

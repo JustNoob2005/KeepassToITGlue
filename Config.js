@@ -8,7 +8,7 @@
  * @param {string} key
  * @returns {string|null}
  */
-function CONFIG_get(key){ 
+function CONFIG_get(key) {
   var props = PropertiesService.getScriptProperties();
   return props.getProperty(key);
 }
