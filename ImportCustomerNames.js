@@ -5,6 +5,7 @@
  * - Column C: organization name
  * It clears previous data (from row 2 down) and repopulates.
  */
+var ui = SpreadsheetApp.getUi();
 function importAllOrganizationNamesToSheet() {
   var lock = LOCK();
   lock.waitLock(30000); // up to 30s
@@ -27,7 +28,7 @@ function importAllOrganizationNamesToSheet() {
     // Fetch organizations via repo
     var orgs = getOrganizationOverview(); // returns [{id,name}]
     // Sort by name (optional, but nice)
-    orgs.sort(function(a, b) { return String(a.name).localeCompare(String(b.name), 'nl'); });
+    orgs.sort(function (a, b) { return String(a.name).localeCompare(String(b.name), 'nl'); });
 
     // Prepare values
     var values = [];
@@ -45,8 +46,18 @@ function importAllOrganizationNamesToSheet() {
       sh.getRange(2, 1, values.length, 3).setValues(values);
     }
 
-    SpreadsheetApp.getUi().alert('Imported ' + values.length + ' organization names from ITGlue into "' + sheetName + '".');
+    ui.alert('Imported ' + values.length + ' organization names from ITGlue into "' + sheetName + '".');
   } finally {
-    try { lock.releaseLock(); } catch (e) {}
+    try { lock.releaseLock(); } catch (e) { }
   }
+}
+
+function compareCustomerNames() {
+  var ss = SS();
+  var sheetNameKeepass = "Klanten overzicht";
+  var sheetNameITGlue = "Klantnamen ITGlue";
+  var shk = ss.getSheetByName(sheetNameKeepass);
+  var shi = ss.getSheetByName(sheetNameITGlue);
+
+  
 }

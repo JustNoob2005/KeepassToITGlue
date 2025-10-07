@@ -89,7 +89,7 @@ function onOpen() {
   ui.createMenu('Start')
     .addItem('Start', 'startScript') // Roept startScript() aan
     .addItem('Klant import naar input zetten', 'KTIStart') // Roept KTIStart() aan
-    .addItem('Test index select', 'testReturn') // Roept testReturn() aan
+    .addItem('Test index select', 'test') // Roept test() aan
     .addToUi();
 
   // Menu "IT Glue Import Overig" met scheiding en 1 optie
@@ -97,6 +97,8 @@ function onOpen() {
     .addSeparator()
     .addItem('Import XML', 'importKeePassXML') // Roept importKeePassXML() aan
     .addItem('Import organization names', 'importAllOrganizationNamesToSheet')
+    .addItem('Mark customer matches', 'markCustomerNameMatches_C36_vs_ITGlueC')
+    .addItem('Mark (debug view)', 'markCustomerNameMatches_DebugRun')
     .addToUi();
 }
 
